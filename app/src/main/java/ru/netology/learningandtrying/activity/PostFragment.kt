@@ -27,59 +27,112 @@
 //        savedInstanceState: Bundle?
 //    ): View {
 //        val binding = FragmentPostBinding.inflate(inflater, container, false)
-//        val card = binding.post
 //        val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
 //        val postId = arguments?.getLong("postId") ?: return binding.root
 //
-//        val onInteractionListener = object : OnInteractionListener {
-//            override fun onLike(post: Post) {
-//                viewModel.likeById(post.id)
-//            }
+//        viewModel.data.observe(viewLifecycleOwner) { state -> val posts = state.posts
+//            val post = posts.find { it.id == postId } ?: return@observe
 //
-//            override fun onShare(post: Post) {
-//                val intent = Intent().apply {
+//            binding.apply {
+//
+//
+//                val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
+//                Glide.with(binding.avatar)
+//                    .load(url)
+//                    .placeholder(R.drawable.ic_not_image)
+//                    .error(R.drawable.ic_error)
+//                    .timeout(10_000)
+//                    .apply(RequestOptions.circleCropTransform())
+//                    .into(binding.avatar)
+//
+//
+//
+//                author.text = post.author
+//                published.text = post.published
+//                content.text = post.content
+//
+//                like.isChecked = post.likedByMe
+//                like.text = formatCount(post.likes)
+//
+//                when (post.attachment?.type) {
+//                    VIDEO -> {
+//                        attachment.visibility = View.VISIBLE
+//
+////                    val url = "http://10.0.2.2:9999/images/${"play.jpg"}"
+////                    Glide.with(binding.attachment)
+////                        .load(url)
+////                        .placeholder(R.drawable.ic_not_image)
+////                        .error(R.drawable.ic_error)
+////                        .timeout(10_000)
+////                        .into(binding.attachment)
+//
+//                        attachment.setOnClickListener {
+//                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.attachment.url))
+//                            startActivity(intent)
+//                        }
+//                    }
+//
+//                    IMAGE -> {
+//                        attachment.visibility = View.VISIBLE
+//                        val url = "http://10.0.2.2:9999/images/${post.attachment.url}"
+//                        Glide.with(binding.attachment).load(url)
+//                            .placeholder(R.drawable.ic_not_image)
+//                            .error(R.drawable.ic_error)
+//                            .timeout(10_000)
+//                            .into(binding.attachment)
+//                    }
+//
+//                    null -> attachment.visibility = View.GONE
+//                }
+//
+//
+//
+//                share.isChecked = post.sharedByMe
+//                share.text = formatCount(post.shares)
+//
+//
+//
+//
+//                like.setOnClickListener { viewModel.likeByID(post.id) }
+//
+//                share.setOnClickListener { val intent = Intent().apply {
 //                    action = Intent.ACTION_SEND
 //                    putExtra(Intent.EXTRA_TEXT, post.content)
 //                    type = "text/plain"
 //                }
-//                val chooser = Intent.createChooser(intent, getString(R.string.chooser_share_post))
-//                startActivity(chooser)
-//                viewModel.shareById(post.id)
-//            }
+//                    val shareIntent =
+//                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
+//                    startActivity(shareIntent) }
 //
-//            override fun onEdit(post: Post) {
-//                viewModel.edit(post)
-//                findNavController().navigate(
-//                    R.id.action_postFragment_to_newPostFragment,
-//                    Bundle().apply {
-//                        putString("textArg", post.content)
-//                    }
-//                )
-//            }
+//                menu.setOnClickListener {
+//                    PopupMenu(it.context, it).apply {
+//                        inflate(R.menu.menu_post)
+//                        setOnMenuItemClickListener { item ->
+//                            when (item.itemId) {
+//                                R.id.remove -> {
+//                                    viewModel.removeByID(post.id)
+//                                    findNavController().navigateUp()
 //
-//            override fun onRemove(post: Post) {
-//                viewModel.removeById(post.id)
-//                findNavController().navigateUp()
-//            }
+//                                    true
+//                                }
 //
-//            override fun onPost(post: Post) {
-//            }
-//        }
+//                                R.id.edit -> {
+//                                    viewModel.edit(post)
+//                                    findNavController().navigate(
+//                                        R.id.action_postFragment_to_newPostFragment,
+//                                        Bundle().apply { textArg = post.content })
+//                                    true
+//                                }
 //
-//        val holder = PostViewHolder(card, onInteractionListener)
+//                                else -> {
+//                                    false
+//                                }
+//                            }
+//                        }
+//                    }.show()
+//                }
 //
-//        val posts = viewModel.data.observe(viewLifecycleOwner) { posts ->
-//            val post = posts.find { it.id == postId }
-//            if (post == null) {
-//                Toast.makeText(
-//                    requireContext(),
-//                    getString(R.string.the_post_is_missing),
-//                    Toast.LENGTH_LONG
-//                ).show()
-//                findNavController().navigateUp()
-//                return@observe
 //            }
-//            holder.bind(post)
 //        }
 //
 //        return binding.root

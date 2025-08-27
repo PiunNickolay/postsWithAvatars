@@ -26,4 +26,5 @@
     <string name="retry">retry</string>
     <string name="empty">empty</string>
     <string name="unknown_error">unknown_error</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

@@ -1,6 +1,7 @@
 package ru.netology.learningandtrying.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,8 +34,11 @@ class FeedFragment : Fragment() {
                 viewModel.likeById(post.id)
             }
 
+            override fun onRemove(post: Post) {
+                viewModel.removeById(post.id)
+            }
+
             override fun onShare(post: Post) {
-                viewModel.shareById(post.id)
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, post.content)
@@ -45,21 +49,19 @@ class FeedFragment : Fragment() {
                 startActivity(sharedIntent)
             }
 
+            override fun onPost(post: Post) {
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_postFragment,
+                    Bundle().apply {
+                        putLong("postId", post.id)
+                    }
+                )
+            }
+
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment,
                     Bundle().apply { textArg = post.content })
-            }
-
-            override fun onRemove(post: Post) {
-                viewModel.removeById(post.id)
-            }
-
-            override fun onPost(post: Post) {
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
-                    bundleOf("postId" to post.id)
-                    )
             }
         })
         binding.list.adapter = adapter
@@ -71,17 +73,14 @@ class FeedFragment : Fragment() {
             binding.empty.isVisible = state.empty
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.load()
+        }
+
         binding.fab.setOnClickListener {
             viewModel.cancelEdit()
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
-
-//        viewModel.edited.observe(viewLifecycleOwner) {
-//            if (it.id != 0L) {
-//                newPostLauncher.launch(it.content)
-//            }
-//        }
-
         return binding.root
     }
 }

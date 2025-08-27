@@ -17,9 +17,7 @@ import ru.netology.learningandtrying.databinding.ActivityAppBinding
 class AppActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         requestNotificationsPermission()
-
         val binding = ActivityAppBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -28,7 +26,7 @@ class AppActivity : AppCompatActivity() {
                 return@let
             }
 
-            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+            val text = it.getStringExtra(Intent.EXTRA_TEXT)
             if(text.isNullOrBlank()){
                 Snackbar.make(
                     binding.root,
@@ -38,8 +36,12 @@ class AppActivity : AppCompatActivity() {
                     finish()
                     }
                     .show()
-                return@let
             }
+            findNavController(R.id.nav_controller).navigate(
+                R.id.action_postFragment_to_newPostFragment,
+                Bundle().apply { textArg = text }
+            )
+
             findNavController(R.id.nav_controller).navigate(
                 R.id.action_feedFragment_to_newPostFragment,
                 Bundle().apply {
