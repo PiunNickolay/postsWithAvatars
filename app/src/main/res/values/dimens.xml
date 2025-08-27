@@ -4,4 +4,6 @@
     <dimen name="betweenIcons">5dp</dimen>
     <dimen name="editMargin">10dp</dimen>
     <dimen name="icon_button_min_size">4dp</dimen>
+    <dimen name="margin">16dp</dimen>
+    <dimen name="avatar_size">48dp</dimen>
 </resources>

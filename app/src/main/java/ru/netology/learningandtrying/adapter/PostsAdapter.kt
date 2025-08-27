@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
 import ru.netology.learningandtrying.Counts
 import ru.netology.learningandtrying.R
 import ru.netology.learningandtrying.databinding.CardPostBinding
@@ -46,6 +47,15 @@ class PostViewHolder(
         root.setOnClickListener{
             onInteractionListener.onPost(post)
         }
+
+        val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
+        Glide.with(binding.avatar)
+            .load(url)
+            .placeholder(R.drawable.ic_is_not_image_24)
+            .error(R.drawable.ic_error_24)
+            .timeout(10_000)
+            .circleCrop()
+            .into(binding.avatar)
         author.text = post.author
 //        published.text = post.published
         content.text = post.content
